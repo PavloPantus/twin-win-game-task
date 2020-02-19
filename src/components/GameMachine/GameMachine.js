@@ -1,8 +1,9 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import './GameMachine.scss';
+import PropTypees from 'prop-types';
 import { GameSlot } from '../GameSlot';
 
-export const GameMachine = () => {
+export const GameMachine = ({ setResults }) => {
   /* default array with pathes to images, it's items will be in slots */
   const currentSlides = useMemo(
     () => {
@@ -124,10 +125,10 @@ export const GameMachine = () => {
   const [showResult, setShowResult] = useState(false);
 
   /* indicates how long to rotate slot */
-  const defaultMaxAnimationCount = 2;
+  const defaultMaxAnimationCount = 0;
 
   /* indicates on gap betwean startin rotation of different slots */
-  const timeGapBetweanSlots = 50;
+  const timeGapBetweanSlots = 100;
 
   /* next 5 useEffects are handle adding stop animation
   class(second animation) */
@@ -235,9 +236,11 @@ export const GameMachine = () => {
 
         setTimeout(() => {
           setShowResult(true);
-        }, defaultMaxAnimationCount * 1000 + 3000);
 
-        setStartGame(false);
+          /* seting game finished  after all slots stopped */
+
+          setStartGame(false);
+        }, defaultMaxAnimationCount * 1000 + 4000);
       }, timeGapBetweanSlots * 4);
     }
   }, [startGame]);
@@ -326,121 +329,248 @@ export const GameMachine = () => {
     }
   }, [showResult]);
 
+  /* show app game results after all winlines updated */
+  useEffect(() => {
+    /* function which counts all occurrences in slots
+         and give points that player got
+         */
+
+    if (!showResult) {
+      return;
+    }
+
+    const getResultPoints = (
+      ...winLines
+    ) => {
+      /* checking top items */
+
+      let topPoints = 0;
+      let lastTopResult = false;
+
+      for (let i = 0; i < 4; i += 1) {
+        if (winLines[i] === winLines[i + 1]
+          && winLines[i]
+        ) {
+          topPoints += 1;
+
+          if (lastTopResult) {
+            topPoints += 10;
+          }
+          lastTopResult = true;
+        } else {
+          lastTopResult = false;
+        }
+      }
+
+      /* checking middle items */
+
+      let middlePoints = 0;
+      let lastMiddleResult = false;
+
+      for (let i = 5; i < 9; i += 1) {
+        if (winLines[i] === winLines[i + 1]
+          && winLines[i]
+        ) {
+          middlePoints += 1;
+
+          if (lastMiddleResult) {
+            middlePoints += 10;
+          }
+          lastMiddleResult = true;
+        } else {
+          lastMiddleResult = false;
+        }
+      }
+
+      /* checking bottom results */
+
+      let bottomPoints = 0;
+      let lastBottomResult = false;
+
+      for (let i = 10; i < 14; i += 1) {
+        if (winLines[i] === winLines[i + 1]
+          && winLines[i]
+        ) {
+          bottomPoints += 1;
+
+          if (lastBottomResult) {
+            bottomPoints += 10;
+          }
+          lastBottomResult = true;
+        } else {
+          lastBottomResult = false;
+        }
+      }
+
+      return topPoints + middlePoints + bottomPoints;
+    };
+
+    const gameResultPoints = getResultPoints(
+      winLineTopSlot1,
+      winLineTopSlot2,
+      winLineTopSlot3,
+      winLineTopSlot4,
+      winLineTopSlot5,
+      winLineMiddleSlot1,
+      winLineMiddleSlot2,
+      winLineMiddleSlot3,
+      winLineMiddleSlot4,
+      winLineMiddleSlot5,
+      winLineBottomSlot1,
+      winLineBottomSlot2,
+      winLineBottomSlot3,
+      winLineBottomSlot4,
+      winLineBottomSlot5,
+    );
+
+    /* Setting results of game in App component */
+
+    let textResult;
+
+    if (gameResultPoints === 1) {
+      textResult = `You got ${gameResultPoints} point ! `;
+    } else {
+      textResult = `You got ${gameResultPoints} points ! `;
+    }
+
+    setResults(textResult);
+  }, [
+    winLineTopSlot1,
+    winLineTopSlot2,
+    winLineTopSlot3,
+    winLineTopSlot4,
+    winLineTopSlot5,
+    winLineMiddleSlot1,
+    winLineMiddleSlot2,
+    winLineMiddleSlot3,
+    winLineMiddleSlot4,
+    winLineMiddleSlot5,
+    winLineBottomSlot1,
+    winLineBottomSlot2,
+    winLineBottomSlot3,
+    winLineBottomSlot4,
+    winLineBottomSlot5,
+    showResult,
+  ]);
+
   return (
     <div className="game-machine">
 
-      <GameSlot
-        setAnimationCountHandler={() => {
-          setAnimationCount1(animationCount1 + 1);
-        }}
-        animationMove={
-          animationMoveSlot1
-        }
+      <div className="game-machine__slots-container">
+        <GameSlot
+          setAnimationCountHandler={() => {
+            setAnimationCount1(animationCount1 + 1);
+          }}
+          animationMove={
+            animationMoveSlot1
+          }
 
-        animationStopSlot={
-          animationStopSlot1
-        }
+          animationStopSlot={
+            animationStopSlot1
+          }
 
-        slides={
-          slotItems1
-        }
+          slides={
+            slotItems1
+          }
 
-        winLineTop={winLineTopSlot1}
-        winLineMiddle={winLineMiddleSlot1}
-        winLineBottom={winLineBottomSlot1}
+          winLineTop={winLineTopSlot1}
+          winLineMiddle={winLineMiddleSlot1}
+          winLineBottom={winLineBottomSlot1}
 
-      />
+        />
 
-      <GameSlot
-        setAnimationCountHandler={() => {
-          setAnimationCount2(animationCount2 + 1);
-        }}
-        animationMove={
-          animationMoveSlot2
-        }
+        <GameSlot
+          setAnimationCountHandler={() => {
+            setAnimationCount2(animationCount2 + 1);
+          }}
+          animationMove={
+            animationMoveSlot2
+          }
 
-        animationStopSlot={
-          animationStopSlot2
-        }
+          animationStopSlot={
+            animationStopSlot2
+          }
 
-        slides={
-          slotItems2
-        }
+          slides={
+            slotItems2
+          }
 
-        winLineTop={winLineTopSlot2}
-        winLineMiddle={winLineMiddleSlot2}
-        winLineBottom={winLineBottomSlot2}
-      />
+          winLineTop={winLineTopSlot2}
+          winLineMiddle={winLineMiddleSlot2}
+          winLineBottom={winLineBottomSlot2}
+        />
 
-      <GameSlot
-        setAnimationCountHandler={() => {
-          setAnimationCount3(animationCount3 + 1);
-        }}
-        animationMove={
-          animationMoveSlot3
-        }
+        <GameSlot
+          setAnimationCountHandler={() => {
+            setAnimationCount3(animationCount3 + 1);
+          }}
+          animationMove={
+            animationMoveSlot3
+          }
 
-        animationStopSlot={
-          animationStopSlot3
-        }
+          animationStopSlot={
+            animationStopSlot3
+          }
 
-        slides={
-          slotItems3
-        }
+          slides={
+            slotItems3
+          }
 
-        winLineTop={winLineTopSlot3}
-        winLineMiddle={winLineMiddleSlot3}
-        winLineBottom={winLineBottomSlot3}
-      />
+          winLineTop={winLineTopSlot3}
+          winLineMiddle={winLineMiddleSlot3}
+          winLineBottom={winLineBottomSlot3}
+        />
 
-      <GameSlot
-        setAnimationCountHandler={() => {
-          setAnimationCount4(animationCount4 + 1);
-        }}
-        animationMove={
-          animationMoveSlot4
-        }
+        <GameSlot
+          setAnimationCountHandler={() => {
+            setAnimationCount4(animationCount4 + 1);
+          }}
+          animationMove={
+            animationMoveSlot4
+          }
 
-        animationStopSlot={
-          animationStopSlot4
-        }
+          animationStopSlot={
+            animationStopSlot4
+          }
 
-        slides={
-          slotItems4
-        }
+          slides={
+            slotItems4
+          }
 
-        winLineTop={winLineTopSlot4}
-        winLineMiddle={winLineMiddleSlot4}
-        winLineBottom={winLineBottomSlot4}
+          winLineTop={winLineTopSlot4}
+          winLineMiddle={winLineMiddleSlot4}
+          winLineBottom={winLineBottomSlot4}
 
-      />
+        />
 
-      <GameSlot
-        setAnimationCountHandler={() => {
-          setAnimationCount5(animationCount5 + 1);
-        }}
-        animationMove={
-          animationMoveSlot5
-        }
+        <GameSlot
+          setAnimationCountHandler={() => {
+            setAnimationCount5(animationCount5 + 1);
+          }}
+          animationMove={
+            animationMoveSlot5
+          }
 
-        animationStopSlot={
-          animationStopSlot5
-        }
+          animationStopSlot={
+            animationStopSlot5
+          }
 
-        slides={
-          slotItems5
-        }
+          slides={
+            slotItems5
+          }
 
-        winLineTop={winLineTopSlot5}
-        winLineMiddle={winLineMiddleSlot5}
-        winLineBottom={winLineBottomSlot5}
+          winLineTop={winLineTopSlot5}
+          winLineMiddle={winLineMiddleSlot5}
+          winLineBottom={winLineBottomSlot5}
 
-      />
+        />
+      </div>
 
       <button
         type="button"
         onClick={
           () => {
+            setResults('');
             setStartGame(true);
           }}
         className="game-machine__play-button"
@@ -449,4 +579,8 @@ export const GameMachine = () => {
       </button>
     </div>
   );
+};
+
+GameMachine.propTypes = {
+  setResults: PropTypees.func.isRequired,
 };

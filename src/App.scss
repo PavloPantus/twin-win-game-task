@@ -4,10 +4,39 @@
   box-sizing: border-box;
 }
 
-.App {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 500px;
+.app {
+  padding-top: 50px;
+  position: relative;
+
+
+  &__heading {
+    text-align: center;
+    font-size: 30px;
+  }
+
+  &__game-results {
+    position: absolute;
+    animation-name: game-results;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    transform: translateX(-50%);
+    top: 100px;
+    border: 1px solid cadetblue;
+    border-radius: 10%;
+    font-size: 20px;
+    background-color: lightgray;
+    box-shadow: -1px 1px 25px 9px rgba(0, 0, 0, 0.75);
+
+    @keyframes game-results {
+      0% {
+        left: 0%;
+      }
+
+      100% {
+        left: 50%;
+      }
+    }
+
+  }
+
 }
