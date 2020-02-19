@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.scss';
-import GameMachine from "./components/GameMachine/GameMachine";
+import { GameMachine } from './components/GameMachine/GameMachine';
 
 function App() {
   return (

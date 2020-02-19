@@ -1,0 +1,62 @@
+.container {
+  height: 195px;
+  border: 3px solid #57a5ff;
+  position: relative;
+}
+
+.winLineTop {
+  position: absolute;
+  z-index: 1;
+  left: -3px;
+  top: 33px;
+  width: calc(100% + 6px);
+  height: 3px;
+  background-color: yellow;
+  border: 1px solid black;
+}
+
+.winLineMiddle {
+  position: absolute;
+  z-index: 1;
+  top: 100px;
+  left: -3px;
+  width: calc(100% + 6px);
+  height: 3px;
+  background-color: yellow;
+  border: 1px solid black;
+}
+
+.winLineBottom {
+  position: absolute;
+  left: -3px;
+  z-index: 1;
+  bottom: 33px;
+  width: calc(100% + 6px);
+  height: 3px;
+  background-color: yellow;
+  border: 1px solid black;
+}
+
+.slot {
+  display: flex;
+  flex-direction: column;
+}
+
+.animation-move{
+  animation: mymove 1s infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes mymove {
+  0%   {transform: translateY(-845px);}
+  100% {transform: translateY(0px);}
+}
+
+.animation-stop {
+  animation: mymove-stop 3s;
+  animation-timing-function: cubic-bezier(0.01, 0.04, 0.18, 0.79);
+}
+@keyframes mymove-stop {
+  0%   {transform: translateY(-845px);}
+  100% {transform: translateY(0px);}
+}
